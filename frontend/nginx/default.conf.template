@@ -1,0 +1,20 @@
+server {
+    listen 80;
+    root /usr/share/nginx/html;
+
+    # /api はバックエンドへ転送する。転送先は環境変数 API_UPSTREAM で指定する。
+    # 変数経由にして名前解決を実行時に行うため、バックエンドが無くても nginx は起動する（/api は 502 になる）。
+    location /api/ {
+        resolver ${NGINX_LOCAL_RESOLVERS} valid=10s;
+        set $api_upstream ${API_UPSTREAM};
+        proxy_pass $api_upstream;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # SPA のため、存在しないパスは index.html を返す
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
