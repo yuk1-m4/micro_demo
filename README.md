@@ -5,6 +5,8 @@
 # 作業フロー
 
 - LinearでIssue管理。整理してGithubへ転送
+  - クラウド開発環境からは claude.ai のコネクタで Linear を読む（ローカルの MCP 設定は引き継がれない）
+- 設計上の決定は [docs/adr](docs/adr/) に残す
 - Claude Code, Codexのクラウド開発をメインで使う
 - できる限りややこしい動線を使わず、シンプルな開発ワークフローを目指す。オッカムの髭剃り
 - IDEはDevin。私はCursorより先にWindsurfつかってたので……
