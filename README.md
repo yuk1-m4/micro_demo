@@ -38,3 +38,4 @@ docker compose -f compose.yaml -f compose.cloud.yaml build
 ```
 
 各 Dockerfile の `prod` ターゲットは本番用イメージ（backend: distroless、frontend: nginx）。
+frontend の nginx は `/api` を環境変数 `API_UPSTREAM`（既定 `http://backend:8080`）へ転送する。
