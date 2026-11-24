@@ -1,4 +1,4 @@
-# 開発用。ソースをマウントしてホットリロードで動かす
+# 開発用。ソースをマウントし、変更を自動で反映する（backend: air、frontend: Vite）
 #   起動:     docker compose up --build
 #   テスト:   docker compose run --rm backend go test ./...
 #             docker compose run --rm frontend npm test

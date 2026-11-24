@@ -17,4 +17,9 @@ RUN npm run build
 
 FROM nginx:1.31-alpine AS prod
 COPY --from=build /app/dist /usr/share/nginx/html
+# 起動時に API_UPSTREAM を埋め込んだ設定を生成する（nginx 公式イメージの templates 機能）
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+ENV API_UPSTREAM=http://backend:8080
+# コンテナの DNS 設定を NGINX_LOCAL_RESOLVERS として使えるようにする
+ENV NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1
 EXPOSE 80
