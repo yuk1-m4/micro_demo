@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # 開発・テスト用: docker compose から dev サーバーやテストを実行する
-FROM node:22-alpine AS dev
+FROM node:26-alpine AS dev
 WORKDIR /app
 COPY package.json package-lock.json ./
 # proxy_ca はプロキシ環境（クラウド開発環境など）でのみ渡す。イメージには残らない
@@ -15,6 +15,6 @@ CMD ["npm", "run", "dev"]
 FROM dev AS build
 RUN npm run build
 
-FROM nginx:1.27-alpine AS prod
+FROM nginx:1.31-alpine AS prod
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

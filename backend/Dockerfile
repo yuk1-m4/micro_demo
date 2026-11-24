@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # 開発・テスト用: docker compose から go run / go test を実行する
-FROM golang:1.24-alpine AS dev
+FROM golang:1.27-alpine AS dev
 WORKDIR /src
 COPY go.mod ./
 # proxy_ca はプロキシ環境（クラウド開発環境など）でのみ渡す。イメージには残らない
@@ -15,7 +15,7 @@ CMD ["go", "run", "."]
 FROM dev AS build
 RUN CGO_ENABLED=0 go build -o /out/server .
 
-FROM gcr.io/distroless/static-debian12 AS prod
+FROM gcr.io/distroless/static-debian13 AS prod
 COPY --from=build /out/server /server
 EXPOSE 8080
 ENTRYPOINT ["/server"]
