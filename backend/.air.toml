@@ -1,0 +1,11 @@
+# air の設定（開発用コンテナで使う）
+# ビルド成果物はマウントしたソースの外（/tmp/air）に置き、リポジトリを汚さない
+root = "."
+tmp_dir = "/tmp/air"
+
+[build]
+cmd = "go build -o /tmp/air/server ."
+entrypoint = ["/tmp/air/server"]
+include_ext = ["go"]
+exclude_regex = ["_test\\.go$"]
+delay = 200

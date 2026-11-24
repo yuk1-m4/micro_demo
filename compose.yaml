@@ -1,0 +1,27 @@
+# 開発用。ソースをマウントし、変更を自動で反映する（backend: air、frontend: Vite）
+#   起動:     docker compose up --build
+#   テスト:   docker compose run --rm backend go test ./...
+#             docker compose run --rm frontend npm test
+services:
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/src
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      API_TARGET: http://backend:8080
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend

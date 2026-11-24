@@ -1,0 +1,25 @@
+# Claude Code などのクラウド開発環境用の上書き設定。
+# この環境ではコンテナから外部へ出る通信がセッションのプロキシ経由になるため、
+# ビルド時にホストのネットワーク・プロキシ・CA証明書を渡す。
+#   docker compose -f compose.yaml -f compose.cloud.yaml build
+# ローカル環境では不要（compose.yaml だけで動く）。
+services:
+  backend:
+    build:
+      network: host
+      args:
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+      secrets:
+        - proxy_ca
+
+  frontend:
+    build:
+      network: host
+      args:
+        HTTPS_PROXY: ${HTTPS_PROXY:-}
+      secrets:
+        - proxy_ca
+
+secrets:
+  proxy_ca:
+    file: ${PROXY_CA_FILE:-/root/.ccr/ca-bundle.crt}
