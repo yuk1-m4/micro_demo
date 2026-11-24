@@ -12,3 +12,4 @@
 | [0002](0002-use-latest-stable-versions.md) | 言語・ツールは最新の安定版を使う | 採用 |
 | [0003](0003-cloud-proxy-override.md) | クラウド環境用のプロキシ設定は上書きファイルに分ける | 採用 |
 | [0004](0004-session-start-hook.md) | セッション開始時の準備は SessionStart フックで行う | 採用 |
+| [0005](0005-mutation-testing-avito-go-mutesting.md) | 金額計算のテストの厳しさを Avito 版 go-mutesting で検査する | 採用 |
