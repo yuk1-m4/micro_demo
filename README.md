@@ -15,3 +15,24 @@
 - [ ] Go言語でバックエンド処理。金銭の計算をそつなくできるかを知る
 - [ ] フロントエンドはReact＋Vite。いつもの
 - [ ] DBはAWS DynamoDB
+
+# 開発環境（Docker）
+
+| ディレクトリ | 内容 |
+|---|---|
+| `backend/` | Go の API サーバー（`:8080`、`GET /api/health`） |
+| `frontend/` | React + Vite（`:5173`、`/api` を backend へプロキシ） |
+
+```bash
+docker compose up --build                         # 起動
+docker compose run --rm backend go test ./...     # バックエンドのテスト
+docker compose run --rm frontend npm test         # フロントエンドのテスト
+```
+
+Claude Code などのクラウド開発環境では、コンテナからの外部通信がプロキシ経由になるため、上書き設定を併用する。
+
+```bash
+docker compose -f compose.yaml -f compose.cloud.yaml build
+```
+
+各 Dockerfile の `prod` ターゲットは本番用イメージ（backend: distroless、frontend: nginx）。
