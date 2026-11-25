@@ -13,3 +13,4 @@
 | [0003](0003-cloud-proxy-override.md) | クラウド環境用のプロキシ設定は上書きファイルに分ける | 採用 |
 | [0004](0004-session-start-hook.md) | セッション開始時の準備は SessionStart フックで行う | 採用 |
 | [0005](0005-mutation-testing-avito-go-mutesting.md) | 金額計算のテストの厳しさを Avito 版 go-mutesting で検査する | 採用 |
+| [0006](0006-consumption-tax-out-of-scope.md) | 消費税は税込経理で記帳し、税額の計算と端数処理は扱わない | 採用 |
