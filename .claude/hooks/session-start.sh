@@ -1,7 +1,8 @@
 #!/bin/bash
 # クラウドセッション開始時の準備（ローカルでは何もしない）
 #  1. git のコミット作成者を yuk1-m4 にする（このリポジトリのみ）
-#  2. Docker デーモンが止まっていれば起動する
+#  2. git フック（.githooks）を有効にする
+#  3. Docker デーモンが止まっていれば起動する
 set -euo pipefail
 
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
@@ -12,6 +13,8 @@ cd "${CLAUDE_PROJECT_DIR:-.}"
 
 git config user.name "yuk1-m4"
 git config user.email "264142626+yuk1-m4@users.noreply.github.com"
+# セッションへのリンクを含むコミットを止める（ADR 0007）
+git config core.hooksPath .githooks
 
 if ! docker info >/dev/null 2>&1; then
   # 起動途中の dockerd があれば待つだけにする（二重起動するとすぐ落ちる）
