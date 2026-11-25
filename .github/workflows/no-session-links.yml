@@ -1,4 +1,4 @@
-# PR のコミットメッセージと説明文に、Claude のセッションへのリンクがないか検査する（ADR 0007）。
+# PR のコミットメッセージと説明文に、Claude へのリンクがないか検査する（ADR 0007）。
 name: no-session-links
 
 on:
@@ -22,10 +22,10 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           bad=$(git log --format='%h %s' -E \
-            --grep='claude\.ai/code/session_[A-Za-z0-9]' --grep='^Claude-Session:' \
+            --grep='claude\.ai/' --grep='claude\.com/' --grep='^Claude-Session:' \
             "$BASE..$HEAD")
           if [ -n "$bad" ]; then
-            echo "::error::コミットメッセージに Claude のセッションへのリンクがあります"
+            echo "::error::コミットメッセージに Claude へのリンクがあります"
             echo "$bad"
             exit 1
           fi
@@ -35,7 +35,7 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
           BODY: ${{ github.event.pull_request.body }}
         run: |
-          if printf '%s\n%s\n' "$TITLE" "$BODY" | grep -qE 'claude\.ai/code/session_[A-Za-z0-9]|Claude-Session:'; then
-            echo "::error::PR のタイトルか説明文に Claude のセッションへのリンクがあります"
+          if printf '%s\n%s\n' "$TITLE" "$BODY" | grep -qE 'claude\.ai/|claude\.com/|Claude-Session:'; then
+            echo "::error::PR のタイトルか説明文に Claude へのリンクがあります"
             exit 1
           fi

@@ -1,5 +1,5 @@
 #!/bin/sh
-# プッシュするコミットのメッセージに、セッションへのリンクがあれば拒否する（ADR 0007）。
+# プッシュするコミットのメッセージに、Claude へのリンクがあれば拒否する（ADR 0007）。
 # cherry-pick や --no-verify など、commit-msg を通らなかったコミットもここで止める。
 zero=0000000000000000000000000000000000000000
 status=0
@@ -11,9 +11,9 @@ while read -r _local_ref local_sha _remote_ref remote_sha; do
     range="$remote_sha..$local_sha"
   fi
   # shellcheck disable=SC2086
-  bad=$(git log --format='%h %s' -E --grep='claude\.ai/code/session_[A-Za-z0-9]' --grep='^Claude-Session:' $range)
+  bad=$(git log --format='%h %s' -E --grep='claude\.ai/' --grep='claude\.com/' --grep='^Claude-Session:' $range)
   if [ -n "$bad" ]; then
-    echo "pre-push: 次のコミットに Claude のセッションへのリンクがあります。メッセージを直してからプッシュしてください。" >&2
+    echo "pre-push: 次のコミットに Claude へのリンクがあります。メッセージを直してからプッシュしてください。" >&2
     echo "$bad" >&2
     status=1
   fi

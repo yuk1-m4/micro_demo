@@ -1,6 +1,6 @@
 #!/bin/sh
-# セッションへのリンクを含むコミットメッセージを拒否する（ADR 0007）。
-if grep -qE 'claude\.ai/code/session_[A-Za-z0-9]|^Claude-Session:' "$1"; then
-  echo "commit-msg: Claude のセッションへのリンク（または Claude-Session: 行）が含まれています。削除してからコミットしてください。" >&2
+# Claude へのリンクを含むコミットメッセージを拒否する（ADR 0007）。
+if grep -qE 'claude\.ai/|claude\.com/|^Claude-Session:' "$1"; then
+  echo "commit-msg: Claude へのリンク（claude.ai・claude.com）または Claude-Session: 行が含まれています。削除してからコミットしてください。" >&2
   exit 1
 fi

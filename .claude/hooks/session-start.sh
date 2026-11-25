@@ -13,7 +13,7 @@ cd "${CLAUDE_PROJECT_DIR:-.}"
 
 git config user.name "yuk1-m4"
 git config user.email "264142626+yuk1-m4@users.noreply.github.com"
-# セッションへのリンクを含むコミットを止める（ADR 0007）
+# Claude へのリンクを含むコミットを止める（ADR 0007）
 git config core.hooksPath .githooks
 
 if ! docker info >/dev/null 2>&1; then
