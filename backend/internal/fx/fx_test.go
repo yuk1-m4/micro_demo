@@ -2,6 +2,7 @@ package fx
 
 import (
 	"errors"
+	"math"
 	"testing"
 	"time"
 )
@@ -130,5 +131,45 @@ func TestRevalueCurrencyMismatch(t *testing.T) {
 	_, _, err := Revalue(Money{100, USD}, Money{100, EUR}, mustRate(t, USD, JPY, "150"), Asset, RoundHalfUp)
 	if !errors.Is(err, ErrCurrencyMismatch) {
 		t.Fatalf("err = %v", err)
+	}
+}
+
+// 換算はどちらも成功するが、差損益が int64 に収まらない場合はエラーにする（Codex レビューの指摘）。
+func TestSettleGainLossOverflow(t *testing.T) {
+	tx, err := Book(Money{math.MinInt64, USD}, mustRate(t, USD, JPY, "100"), RoundHalfUp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := Settle(tx, mustRate(t, USD, JPY, "0.000000000000000001"), Asset, RoundHalfUp); !errors.Is(err, ErrOverflow) {
+		t.Fatalf("資産の差損益: err = %v", err)
+	}
+}
+
+// 差が math.MinInt64 のとき、負債として符号を反転するとあふれる。
+func TestSettleLiabilityNegationOverflow(t *testing.T) {
+	tx := Transaction{Foreign: Money{math.MinInt64, JPY}, Booked: Money{0, JPY}}
+	if _, _, err := Settle(tx, mustRate(t, JPY, JPY, "1"), Liability, RoundHalfUp); !errors.Is(err, ErrOverflow) {
+		t.Fatalf("負債の符号反転: err = %v", err)
+	}
+}
+
+// 小数3桁の通貨（クウェート・ディナール）も、最小単位（1/1000 KWD）の整数で同じように扱える。
+func TestConvertThreeDecimalCurrency(t *testing.T) {
+	KWD := Currency{Code: "KWD", MinorUnits: 3}
+	// 12.345 KWD × 487.6543 = 6020.0923335 円 → 6020 円
+	got, err := Convert(Money{12345, KWD}, mustRate(t, KWD, JPY, "487.6543"), RoundHalfUp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != (Money{6020, JPY}) {
+		t.Fatalf("KWD→JPY: got %v", got)
+	}
+	// 10,000 円 × 0.002051 = 20.51 KWD → 20510（1/1000 KWD）
+	got, err = Convert(Money{10000, JPY}, mustRate(t, JPY, KWD, "0.002051"), RoundHalfUp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != (Money{20510, KWD}) {
+		t.Fatalf("JPY→KWD: got %v", got)
 	}
 }
