@@ -160,11 +160,15 @@ func diff(now, booked Money, side Side) (Money, error) {
 	if now.Currency != booked.Currency {
 		return Money{}, fmt.Errorf("%w: %s vs %s", ErrCurrencyMismatch, now.Currency.Code, booked.Currency.Code)
 	}
-	d := now.Amount - booked.Amount
+	// 引き算と符号の反転は int64 であふれうるので big.Int で計算する。
+	d := new(big.Int).Sub(big.NewInt(now.Amount), big.NewInt(booked.Amount))
 	if side == Liability {
-		d = -d
+		d.Neg(d)
 	}
-	return Money{Amount: d, Currency: now.Currency}, nil
+	if !d.IsInt64() {
+		return Money{}, ErrOverflow
+	}
+	return Money{Amount: d.Int64(), Currency: now.Currency}, nil
 }
 
 func pow10Rat(exp int) *big.Rat {
